@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import generateToken from "../lib/utils.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
+import cloudinary from '../lib/cloudinary.js'
 
 //---------------SIGN UP---------------------
 const signup = async (req, res) => {
@@ -97,11 +98,15 @@ const updateProfile = async(req, res) => {
     const {profilePic} = req.body;
     const userId = req.user._id;
     if(!profilePic){
-      return res.status(200).json({message:"profile pic is required"})
+      return res.status(400).json({message:"profile pic is required"})
     }
     const uploadResponse = await cloudinary.uploader.upload(profilePic)
-    const updateUser = await User.findByIdAndUpdate(userId, {profilePic:uploadResponse.secret_url}, {new:true} )
-    res.status(200).json(updateUser)
+    const updatedUser = await User.findByIdAndUpdate(
+      userId, 
+      {profilePic: uploadResponse.secure_url}, 
+      {new:true} 
+    )
+    res.status(200).json(updatedUser)
   } catch (error) {
     console.log("error in update profile:", error);
     res.status(500).json({message: "Internal server error"})
