@@ -1,16 +1,21 @@
 import React, { useEffect } from 'react'
-import { useChatStore } from '../store/useChatStore';
 import SidebarSkeleton from './skeletons/SidebarSkeleton';
 import { Users } from 'lucide-react';
+import useChatStore from '../store/useChatStore';
+import useAuthStore from '../store/userAuthStore';
+
 
 const Sidebar = () => {
-  const {users, getUsers, selectedUser, setSelectedUser, isUserLoading} = useChatStore();
-  const onlineUsers = [];
+  const { getUsers ,users, selectedUser, setSelectedUser, isUserLoading} = useChatStore();
+  const {onlineUsers} = useAuthStore();
+
+
   useEffect(() => {
     getUsers()
-  },[getUsers])
+    console.log(users);
+  }, [getUsers]);
 
-  if(isUserLoading) return <SidebarSkeleton />
+  if(isUserLoading) return <SidebarSkeleton />;
 
   return (
     <aside  className="h-full w-20 lg:w-72 border-r border-base-300 flex flex-col transition-all duration-200">
@@ -23,12 +28,13 @@ const Sidebar = () => {
       </div>
 
       <div className='overflow-y-auto w-full py-3'>
-        {users.map((user) => {
+        {users.map((user) => (
           <button 
           key={user._id}
           onClick={()=>setSelectedUser(user)}
-          className={` w-full p-2 flex items-center gap-3 hover:bg-base-300 transition-colors
-            ${selectedUser?._id === user._id ? "bg-base-300 ring-1 ring-base-300" : ""}
+          className={`w-full p-3 flex items-center gap-3
+              hover:bg-base-300 transition-colors
+              ${selectedUser?._id === user._id ? "bg-base-300 ring-1 ring-base-300" : ""}
             `}
           >
             <div className='relative mx-auto lg:mx-0'>
@@ -50,7 +56,7 @@ const Sidebar = () => {
               </div>
             </div>
           </button>
-        })}
+        ))}
       </div>
     </aside>
   )

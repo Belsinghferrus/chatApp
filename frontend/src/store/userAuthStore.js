@@ -9,6 +9,7 @@ import Message from './../../../backend/src/models/message.model';
     isSigningUp: false,
     isLoggingIn: false,
     isUpdatingProfile:false,
+    onlineUsers:[],
    
 
 
